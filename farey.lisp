@@ -8,13 +8,17 @@
 
 (defun generate-farey-grid (n)
   (sort (coerce (remove-duplicates
-                 (loop for j from 1 to n
-                       append (loop for i from 0 to j
-                                    collect (/ i j))))
+                 (list* 0
+                        (loop for j from 1 to n
+                              append (loop for i from 1 to (- j 1)
+                                           collect (/ i j)))))
                 'vector)
         #'<))
 
-(defvar *farey-grid* (generate-farey-grid 100))
+(defvar *farey-grid* (generate-farey-grid 10))
+
+(defun new-farey-grid (n)
+  (setf *farey-grid* (generate-farey-grid n)))
 
 (defun fareyref (p)
   (aref *farey-grid* p))
@@ -40,7 +44,7 @@
                               (- residual (fareyref (1- grid-index))))
                            (values multiplier grid-index)
                            (values multiplier (1- grid-index)))))
-          finally (return (values multiplier grid-index)))))
+          finally (return (values multiplier (1- grid-index))))))
 
 (defun ensure-farey (x)
   (etypecase x
@@ -74,16 +78,14 @@
              number))
     (setf (%grid-index farey) grid-index)))
 
-(defun farey-number (farey)
+(defun farey->number (farey)
   (+ (multiplier farey) (fraction farey)))
 
 (defun combine (a b operation)
   (let ((a (ensure-farey a))
         (b (ensure-farey b)))
     (multiple-value-bind (multiplier grid-index)
-        (snap-to-farey-grid (funcall operation
-                                     (+ (multiplier a) (fraction a))
-                                     (+ (multiplier b) (fraction b))))
+        (snap-to-farey-grid (funcall operation (farey->number a) (farey->number b)))
       (make-farey multiplier grid-index))))
 
 (defun f+ (&rest args)
@@ -125,6 +127,6 @@
          (f/ 1 a))))
 
 (defun fshift (a spaces)
-  (let ((a (ensure-farey a)))
+  (let ((a (copy-farey (ensure-farey a))))
     (incf (grid-index a) spaces)
     a))
