@@ -26,7 +26,7 @@
 
 (defmethod print-object ((farey farey) stream)
   (print-unreadable-object (farey stream :type T)
-    (format stream "~s ~s" (multiplier farey) (farey-number farey))))
+    (format stream "~s ~s" (multiplier farey) (fraction farey))))
 
 (defmethod make-load-form ((farey farey) &optional env)
   (declare (ignore env))
