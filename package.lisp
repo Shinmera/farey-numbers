@@ -20,7 +20,7 @@
    #:multiplier
    #:grid-index
    #:fraction
-   #:farey-number
+   #:farey->number
    #:combine
    #:f+
    #:f*
