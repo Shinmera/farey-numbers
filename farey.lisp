@@ -85,9 +85,7 @@
   (let ((a (ensure-farey a))
         (b (ensure-farey b)))
     (multiple-value-bind (multiplier grid-index)
-        (snap-to-farey-grid (funcall operation
-                                     (+ (multiplier a) (fraction a))
-                                     (+ (multiplier b) (fraction b))))
+        (snap-to-farey-grid (funcall operation (farey->number a) (farey->number b)))
       (make-farey multiplier grid-index))))
 
 (defun f+ (&rest args)
